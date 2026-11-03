@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxNjIxMjY2OTk1NTE0Mjg5MDQ4OSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzFkNmMxZDIwYTdlMDJhYjNfaW5kZXguaHRtbC0yNDEifSwiZXhwIjoxNzkzNjg2MzQwLCJpYXQiOjE3OTM2ODI3NDAsImFsZyI6IlJTMjU2In0.B6S_bq1y8SNw7RTudTfePscfw2yw4l96AuGLNrcFjTGGSoMOlK0K56v6t-pUJS19mNPoWRqlUya-R72U1mxlKx762iUMMrf7USiVc9J1ZCmRI-qt9ciuLGSPqDaNyPk5cWqsWPpEJb3KsWIxPBi4RFTq_quO6ea3ZzJXFKgXQzfxZ6gzP1F8iVcHpGSshgaBQI_40_ykJCV7Yr2mQEyV0ObqYRwalhM_UkKcW1GxYQGA5uUOLmolq7VS7TvjsDcogE79AXLvM6QqCibLU7NYurYnXjdt0TJ1UQEzvUArT-wPYfJzIPCXzDsWKy9P8h5LpBCreqyDXUuT9HknuoHriQ","c_1d6c1d20a7e02ab3_index.html-241")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function() {
+  function normalizeSlug(str) {
+    try {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^p{L}p{N}s_-]/gu, '')
+        .replace(/s+/g, '-');
+    } catch (e) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9s_-]/g, '')
+        .replace(/s+/g, '-');
+    }
+  }
+
+  function findTargetElement(hash) {
+    if (!hash || hash === '#') {
+      return null;
+    }
+    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
+    let decodedId = rawId;
+    try {
+      decodedId = decodeURIComponent(rawId);
+    } catch (e) {
+      // Ignore URI malformed errors.
+    }
+
+    // 1. Direct ID match (raw and decoded).
+    let target = document.getElementById(rawId) || document.getElementById(decodedId);
+    if (target) {
+      return target;
+    }
+
+    // 2. Name attribute match (<a name="...">).
+    try {
+      if (typeof CSS !== 'undefined' && CSS.escape) {
+        target =
+          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
+          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
+      } else {
+        const namedElements = document.getElementsByName(rawId);
+        if (namedElements && namedElements.length > 0) {
+          return namedElements[0];
+        }
+      }
+    } catch (e) {
+      // Ignore querySelector syntax errors.
+    }
+    if (target) {
+      return target;
+    }
+
+    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
+    const targetSlug = normalizeSlug(decodedId);
+    if (targetSlug) {
+      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        if (normalizeSlug(heading.textContent || '') === targetSlug) {
+          return heading;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
+    if (!anchor) {
+      return;
+    }
+
+    const href = anchor.getAttribute('href');
+    if (
+      !href ||
+      href.trim().toLowerCase().startsWith('javascript:') ||
+      anchor.hasAttribute('download')
+    ) {
+      return;
+    }
+
+    // Check if the link is an in-page hash / anchor link.
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const targetElement = findTargetElement(href);
+      if (targetElement) {
+        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+      return;
+    }
+
+    // Check if the URL has the same origin/pathname but with a hash.
+    try {
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.hash &&
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname
+      ) {
+        event.preventDefault();
+        const targetElement = findTargetElement(url.hash);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+        return;
+      }
+    } catch (e) {
+      // Fall through if URL parsing fails.
+    }
+
+    // For all external or full navigation links, prevent iframe-level navigation
+    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
+    // safely in a new tab/window.
+    if (anchor.target !== '_blank') {
+      event.preventDefault();
+      window.open(anchor.href, '_blank', 'noopener,noreferrer');
+    }
+  }, {capture: true});
+})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natalia Sanchez - Sr. Aerospace Systems Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap');
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #08090b;
+    color: #e4e4e7;
+    font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 40px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Sticky Top Control Bar */
+  .control-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #0f1115;
+    border-bottom: 1px solid #27272a;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  }
+
+  .brand-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-title::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #e10600;
+    border-radius: 2px;
+  }
+
+  .toggle-group {
+    display: flex;
+    background-color: #1a1e24;
+    padding: 3px;
+    border-radius: 6px;
+    border: 1px solid #27272a;
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .toggle-btn.active {
+    background-color: #e10600;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(225, 6, 0, 0.4);
+  }
+
+  .copy-btn {
+    background-color: #27272a;
+    color: #ffffff;
+    border: 1px solid #3f3f46;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .copy-btn:hover {
+    background-color: #3f3f46;
+    border-color: #52525b;
+  }
+
+  /* Main Display Views */
+  .view-container {
+    padding-top: 30px;
+  }
+
+  .resume-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #12151a;
+    border: 1px solid #27272a;
+    border-radius: 4px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Header Section */
+  header {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #e10600;
+  }
+
+  h1 {
+    color: #ffffff;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: #e10600;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    font-size: 13.5px;
+    color: #a1a1aa;
+  }
+
+  .contact-info a {
+    color: #e4e4e7;
+    text-decoration: none;
+  }
+
+  .contact-info a:hover {
+    color: #e10600;
+  }
+
+  /* Section Headers with Vibrant Red to Dark Fade Gradient */
+  h2 {
+    background: linear-gradient(90deg, #cc0000 0%, #750000 70%, #200000 100%);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 6px 14px;
+    margin-top: 25px;
+    margin-bottom: 16px;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(225, 6, 0, 0.25);
+  }
+
+  p {
+    font-size: 14px;
+    color: #d4d4d8;
+    margin-bottom: 8px;
+  }
+
+  /* Bullet Styling */
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #d4d4d8;
+  }
+
+  li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: #e10600;
+    font-size: 9px;
+  }
+
+  /* Areas of Expertise Grid - CENTER ALIGNED TEXT */
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px 16px;
+    margin-top: 12px;
+  }
+
+  .expertise-item {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #1a1e24;
+    padding: 12px 16px;
+    border-radius: 3px;
+    border-left: 3px solid #e10600;
+    text-align: center; /* Centered alignment for cell contents */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* Experience & Role Styles */
+  .role-container {
+    margin-bottom: 22px;
+  }
+
+  .company-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 700;
+    font-size: 15.5px;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .role-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: #e10600;
+    margin-top: 12px;
+    margin-bottom: 6px;
+  }
+
+  .date {
+    font-size: 13px;
+    color: #e10600;
+    font-weight: 700;
+  }
+
+  /* Sub-lists for nested bullet points */
+  .sub-list {
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .sub-list li {
+    padding-left: 18px;
+    margin-bottom: 6px;
+  }
+
+  .sub-list li::before {
+    content: "•";
+    left: 4px;
+    top: -1px;
+    font-size: 12px;
+    color: #e10600;
+  }
+
+  /* Publications */
+  .publication-item {
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #d4d4d8;
+  }
+
+  .publication-item a {
+    color: #e10600;
+    text-decoration: none;
+  }
+
+  .publication-item a:hover {
+    text-decoration: underline;
+  }
+
+  /* Code View Container */
+  .code-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: none;
+  }
+
+  textarea#codeView {
+    width: 100%;
+    height: 75vh;
+    background-color: #0f1115;
+    color: #34d399;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 20px;
+    border: 1px solid #27272a;
+    border-radius: 4px;
+    resize: vertical;
+    outline: none;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e10600;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Print Support */
+  @media print {
+    .control-bar {
+      display: none !important;
+    }
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      padding: 0;
+    }
+    .container, .resume-container {
+      background-color: #ffffff !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      max-width: 100% !important;
+    }
+    h1 {
+      color: #000000 !important;
+    }
+    h2 {
+      background: #cc0000 !important;
+      color: #ffffff !important;
+    }
+    .company-header {
+      color: #000000 !important;
+    }
+    .role-header, .date, .subtitle, .publication-item a {
+      color: #cc0000 !important;
+    }
+    p, li, .contact-info {
+      color: #222222 !important;
+    }
+    .expertise-item {
+      background: #f4f4f5 !important;
+      color: #000000 !important;
+      border-left: 3px solid #cc0000 !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Sticky Control Bar -->
+<div class="control-bar">
+  <div class="brand-title">Natalia Sanchez — F1 Resume</div>
+  <div class="toggle-group">
+    <button class="toggle-btn active" id="btnPreview" onclick="switchView('preview')">Preview</button>
+    <button class="toggle-btn" id="btnCode" onclick="switchView('code')">HTML Code</button>
+  </div>
+  <button class="copy-btn" onclick="copyHTMLCode()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+    Copy HTML
+  </button>
+</div>
+
+<div class="view-container">
+
+  <!-- RENDERED RESUME PREVIEW VIEW -->
+  <div class="resume-container" id="previewView">
+    <header>
+      <h1>NATALIA SANCHEZ</h1>
+      <div class="subtitle">SR. AEROSPACE SYSTEMS ENGINEER • TECHNICAL LEAD &amp; MANAGER • CHANGEMAKER</div>
+      <div class="contact-info">
+        <a href="https://linkedin.com/in/nataliasv/" target="_blank" rel="noopener noreferrer">linkedin.com/in/nataliasv/</a>
+        <span>+1 626.627.3209</span>
+        <span>sanchezvnatalia@gmail.com</span>
+        <span>Available for Relocation</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>SUMMARY</h2>
+      <ul>
+        <li>Engineering leader and manager with 18 years of experience in Systems Engineering at NASA's Jet Propulsion Laboratory and technology startups.</li>
+        <li>Specialized in Space Systems Verification &amp; Validation (V&amp;V), project lifecycle management, process improvement, high-performing engineering teams and multi-disciplinary collaborations.</li>
+        <li>Diverse roles and projects: 11 programs each with different systems, flagships to experimental, from concept to operation and decommissioning.</li>
+        <li>Currently driving Requirements/V&amp;V Process Transformation across large engineering organizations and co-leading AI infusion on new JPL missions. Previously led institution-wide digital transitions to enterprise platforms.</li>
+        <li>Demonstrated success in tactical and strategic roles, including establishing updated Systems Engineering practices &amp; deliverables that increased operational efficiency and reduced implementation risk.</li>
+        <li>5 years’ experience in people and Engineering function management: Hiring, training, managing and leading Systems Engineering individual contributors.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>EDUCATION &amp; TRAINING</h2>
+      <div class="company-header">
+        <span>M.S. Technology Management - Systems Engineering concentration | B.S. Aerospace Engineering (Honors)</span>
+        <span class="date">June 2008</span>
+      </div>
+      <p style="color: #a1a1aa; font-size: 13.5px; margin-bottom: 6px;">California Polytechnic State University, San Luis Obispo, CA</p>
+      <p><strong>Distinctive courses:</strong> Quality Control and Process Improvement • Enterprise Resource Planning • Flight Simulation and Aerodynamics of NASA Research Aircraft (Thesis and Field testing)</p>
+      <p><strong>Selected Professional Training:</strong> NASA Systems Engineering and Project Management, JPL Organizational Leadership, Radical Candor, Crucial Conversations, The Fifth Discipline: The Art and Practice of the Learning Organization.</p>
+    </section>
+
+    <section>
+      <h2>AREAS OF EXPERTISE</h2>
+      <div class="expertise-grid">
+        <div class="expertise-item">Systems Engineering Governance &amp; Standards</div>
+        <div class="expertise-item">Requirements &amp; Interface Management</div>
+        <div class="expertise-item">Robotics V&amp;V / Software-Hardware I&amp;T</div>
+        <div class="expertise-item">Relational Databases &amp; Collaboration Software</div>
+        <div class="expertise-item">Process Improvement &amp; Strategy</div>
+        <div class="expertise-item">Telemetry Analysis &amp; Performance Metrics</div>
+        <div class="expertise-item">Multidisciplinary &amp; International Collaborations</div>
+        <div class="expertise-item">Technical Project Management</div>
+        <div class="expertise-item">Talent Management &amp; Coaching</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ACHIEVEMENT HIGHLIGHTS</h2>
+      <ul>
+        <li>
+          <strong>Systems Engineering Transformation:</strong> Co-led a 2-year strategic initiative to upgrade JPL's Requirements/ V&amp;V engineering practices with emphasis on standardization and optimization of the technology stack and lessons learned:
+          <ul class="sub-list">
+            <li>Conducted trade studies to select tools for Requirements Management, test automation, document lifecycle, and data visualization, evaluated the software as customer, and drove consensus among stakeholders and decision-makers;</li>
+            <li>Worked with UX designers through the innovation process: Discovery, user research, incubation, evaluation, and prioritization of innovation opportunities. Currently I’m co-leading an AI Adoption initiative.</li>
+            <li>Led user pain-point and process analyses, architected adaptable frameworks that address analyses’ findings and best support a range of use cases and institutional constraints;</li>
+            <li>Designed and standardized database schemas, workflows, and metrics; transitioned digital infrastructure to industry-leading enterprise software, including tailoring the tools to the new frameworks and training users in best practices;</li>
+            <li>Redefined tasks and roles to align with the updated processes and technology stack and implement lessons learned;</li>
+            <li>Introduced resource- and schedule-based V&amp;V planning and management.</li>
+          </ul>
+        </li>
+        <li><strong>Database &amp; Metrics Automation:</strong> Developed a proprietary tool suite to automate (1) data querying and extraction from a relational database, (2) on-demand or scheduled database updates, and (3) data analysis and metrics generation; became JPL's institutional standard, adopted across multiple programs.</li>
+        <li><strong>Requirements Framework Deployment:</strong> Architected and implemented a full requirements development &amp; management framework using DOORS between JPL and the Indian Space Research Organization (ISRO), delivering the first Requirements-Design baseline to pass NASA Key Decision Point for project implementation; trained ISRO engineers remotely.</li>
+        <li><strong>Space Exploration Breakthrough:</strong> Led the verification &amp; validation (V&amp;V) of the Curiosity Mars Rover Drill software, ensuring integrated hardware-software functionality, performance, and operability in flight, directly enabling the historic first acquisition of a Martian rock sample and one of the most significant scientific discoveries in planetary exploration.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>PROFESSIONAL EXPERIENCE</h2>
+      <div class="role-container">
+        <div class="company-header">
+          <span>NASA Jet Propulsion Laboratory (JPL), Pasadena, CA</span>
+          <span style="color: #a1a1aa; font-weight: 400; font-size: 13.5px;">2008-17, 2020-Present</span>
+        </div>
+        <p style="color: #a1a1aa; font-size: 13.5px; margin-bottom: 8px;">Systems Engineer 4 - Management M1</p>
+
+        <div class="role-header">
+          <span>Technical Group Supervisor: Flight Systems Verification &amp; Validation (V&amp;V) Engineering</span>
+          <span class="date">Oct 2021-Present</span>
+        </div>
+        <ul>
+          <li>Led and managed a group of 15-30 engineers overseeing cross-cutting system compliance on diverse concurrent programs. Responsible for all aspects of group performance, business operations, and career development.</li>
+          <li>Drove strategic improvements in institutional practices/workflows that impact V&amp;V engineering efficiency on all project types, reported directly to executive leadership (JPL Office of Chief Engineer, Project Engineering Management Council).</li>
+          <li>Collaborated with cross-functional stakeholders, including Engineering and Business leads, to address workforce and technical challenges such as launch delays, systemic hardware failures, and program cancellations.</li>
+          <li>Defined frameworks and products for verifying projects' compliance with customer requirements, industry standards and regulations; provided guidance and training to implementers through command media and process codification.</li>
+          <li>Conducted comprehensive workforce, costing and schedule analyses for 8+ flight projects, proactively identifying risks and staffing contingencies. Managed end-to-end hiring and training to ensure optimal team performance and program resourcing. Drafted and approved Statements of Work.</li>
+          <li>Served as Engineering Review Chair and subject matter expert on institutional V&amp;V Peer Reviews and L2-L3 Requirements Reviews for in-development missions (Mars Sample Return, NEO-Surveyor, GRACE Continuity, SPHEREx, SunRISE, MoonFall), identified risks that materialized, and supported projects through their resolution.</li>
+          <li>Currently coordinating JPL's emerging AI adoption in Systems Engineering; conducting early evaluations of AI platforms, created JPL’s first V&amp;V Assistant agent.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>Europa Clipper Testbed V&amp;V Lead, System Integration &amp; Test Team (SI&amp;T)</span>
+        </div>
+        <ul>
+          <li>Coordinated the technical scope for Europa Clipper's V&amp;V execution on the System Testbed, translating system-level requirements into comprehensive test procedures and data products.</li>
+          <li>Established and implemented V&amp;V processes and standard operating procedures, trained distributed/remote teams of 15-30 Systems Engineers, and managed collaboration platforms and dashboards.</li>
+          <li>Regularly presented status and risks to project and institutional management.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>Asteroid Redirect Robotic Mission Project V&amp;V Lead, Technical Project Management Team</span>
+        </div>
+        <ul>
+          <li>Drafted requirements &amp; work agreements with 6+ industry partners; defined multi-agency approaches for verifying systems capabilities against mission objectives, contributing to first successful project-level key decision point.</li>
+          <li>Authored Project V&amp;V Plan, including testbed requirements + MBSE approach.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>InSight Mission to Mars: Project-level Systems Engineer, Technical Project Management Team</span>
+        </div>
+        <ul>
+          <li>Led the test &amp; analysis campaign to verify and validate the End-to-End Information System with subject matter experts, coordinating activities across 5 organizations including Lockheed Martin and demonstrating compliance with Flight-Ground ICDs for all 3 Mars relay orbiters.</li>
+          <li>Delivered test hardware + procedures for remote anomaly resolution of non-conformant European payload in support of the Seismometer Binding Tiger Team, leading to successful fix replication by French counterparts and improved sense of team accomplishment with European Space Agency ESA/CNES.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>NISAR Project Requirements Lead | ISS-RapidScat Safety Systems Engineer, Technical Project Management Teams</span>
+        </div>
+        <ul>
+          <li>Architected and implemented a Requirements development &amp; management framework based on Systems Engineering best practices, delivered and co-authored the first L2-L3 requirements baseline to pass Project-level Gate Reviews.</li>
+          <li>Trained a team of partner Indian Space Research Organization Systems Engineers (based in India) on requirements development methodology and set up/managed DOORS database. Recruited and mentored interns that later were hired full time as JPL employees.</li>
+          <li>Verified mechanical, electrical, and human safety compliance of 'refurbished' radar instrument to be compatible with the International Space Station Columbus module and SpaceX Falcon9 rocket interfaces.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>Curiosity Mars Rover: Sampling Mechanism V&amp;V Engineer &amp; Testbed Engineer, Flight Systems Engineering Team</span>
+        </div>
+        <ul>
+          <li>Responsible for the operational readiness and safe handling of the robotic sampling drill in flight and test environments. Completed verification &amp; validation of its software and flight sequences leading to the acquisition of the first Martian rock sample. Included verification of all Flight Software requirements, commands, telemetry, and operations procedures for its First Time Activities on the surface of Mars.</li>
+          <li>Planned and conducted software-hardware testing on Rover Testbed and Flight Software simulator, prescribed + verified corrective action to anomalies, formulated + performed regression testing, delivered L4/L5 data analyses documenting subsystem compliance for 3 Flight Software releases, and certified complex multi-system behaviors and capabilities for flight through structured institutional Software Acceptance Certifications.</li>
+        </ul>
+
+        <div class="role-header">
+          <span>JUNO Jupiter flagship: Support V&amp;V Engineer, Project-level Technical Management Team</span>
+        </div>
+        <ul>
+          <li>Liaison for insight/oversight of the Verification &amp; Validation program working with Lockheed Martin and 10 Science Principal Investigators. Provided critical data-driven insights and progress metrics to project managers, enabling timely prioritization and closure of critical activities, and ensuring successful institutional audits for launch approval.</li>
+          <li>Created and managed a multi-location DOORS database that aggregated the 7,000+ specs for all systems of the mission.</li>
+          <li>Developed and implemented a proprietary tool suite that significantly enhanced efficiency in database mining and metrics reporting, establishing a new standard for project management's V&amp;V tracking across multiple missions.</li>
+        </ul>
+      </div>
+
+      <div class="role-container">
+        <div class="company-header">
+          <span>Startups &amp; Consulting: Shared Studios, NYC; Drone Racing League, NYC; Doctorpedia, Los Angeles</span>
+          <span class="date">Jul 2017 - Mar 2019</span>
+        </div>
+        <ul>
+          <li>Architected product development roadmaps, automation tools, Work Breakdown Structures and Critical Path Analyses.</li>
+          <li>Identified function/process/product gaps and recommended hiring strategy for a fully-functional development team paired with simple processes to address organizational challenges and better align business objectives with results.</li>
+          <li>Deployed multi-media life-size Portals that connect people in remote locations for education, outreach, and enterprise.</li>
+          <li>Structured scenario-based development timelines &amp; estimated resources for launching scalable online platform MVP, resulting in more streamlined integration of workflows among remote teams of doctors, producers, developers, business analysts, legal &amp; quality control.</li>
+          <li>Designed and implemented algorithms and automation of proprietary matrix tool for job-salary grading &amp; profit analyses.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>DISTINCTIONS &amp; OTHER QUALIFICATIONS</h2>
+      <ul>
+        <li><strong>Advanced user:</strong> Jira, Confluence, Asana, Anaplan, DOORS/DNG, Jama, Figma, Microsoft Office suite.</li>
+        <li>JPL Leadership Mentoring Program 2024 cohort - 20 selected out of ~1,700 mid-career individual contributors.</li>
+        <li>Recipient of 20+ team and individual NASA awards over 15+ years of service. References available.</li>
+        <li>Fluent in Spanish (native), beginner French. Avid international traveler, meditator, yogi.</li>
+        <li>Dual citizen U.S. and Colombia, willing to relocate as early as December 2026.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>PUBLICATIONS</h2>
+      <div class="publication-item">
+        [1] Vierlboeck, M., Sanchez, N., et al. (2026). “Developing a Unified Verification and Validation Activity Standard at JPL.” <em>arXiv preprint</em>. <a href="https://arxiv.org/abs/2609.28600" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/2609.28600</a>
+      </div>
+      <div class="publication-item">
+        [2] <strong>Best Paper Award:</strong> Maxwell, J., Sanchez, N., et al. (2025). “Achieving Mission Success: Verification and Validation of the Psyche Mission.” <em>Journal of Electric Propulsion / IEPC</em>. <a href="https://doi.org/10.1007/s44205-025-00162-w" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s44205-025-00162-w</a>
+      </div>
+      <div class="publication-item">
+        [3] Rocca, J., Lord, N. (neé Sanchez), et al. (2013). “Scaling the V&amp;V mountain: Proving Juno will succeed at Jupiter”. <em>IEEE Aerospace Conference</em>. <a href="https://doi.org/10.1109/AERO.2013.6496893" target="_blank" rel="noopener noreferrer">https://doi.org/10.1109/AERO.2013.6496893</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- HTML SOURCE CODE VIEW -->
+  <div class="code-container" id="codeViewContainer">
+    <textarea id="codeView" readonly=""></textarea>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Code copied to clipboard!</div>
+
+<script>
+  // Populate the HTML code view dynamically on page load
+  window.onload = function() {
+    const fullContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    document.getElementById('codeView').value = fullContent;
+  };
+
+  function switchView(view) {
+    const previewEl = document.getElementById('previewView');
+    const codeEl = document.getElementById('codeViewContainer');
+    const btnPreview = document.getElementById('btnPreview');
+    const btnCode = document.getElementById('btnCode');
+
+    if (view === 'preview') {
+      previewEl.style.display = 'block';
+      codeEl.style.display = 'none';
+      btnPreview.classList.add('active');
+      btnCode.classList.remove('active');
+    } else {
+      previewEl.style.display = 'none';
+      codeEl.style.display = 'block';
+      btnCode.classList.add('active');
+      btnPreview.classList.remove('active');
+    }
+  }
+
+  function copyHTMLCode() {
+    const codeText = document.getElementById('codeView').value || ("<!DOCTYPE html>\n" + document.documentElement.outerHTML);
+    
+    // Attempt standard execCommand fallback directly for iframe compatibility
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codeText).then(showToast).catch(() => {
+          fallbackCopyText(codeText);
+        });
+      } else {
+        fallbackCopyText(codeText);
+      }
+    } catch (e) {
+      fallbackCopyText(codeText);
+    }
+  }
+
+  function fallbackCopyText(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      showToast();
+    } catch (err) {
+      console.error('Copy failed:', err);
+    }
+    document.body.removeChild(textarea);
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2500);
+  }
+</script>
+
+
+</body></html>
