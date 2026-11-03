@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natalia Sanchez - Sr. Aerospace Systems Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap');
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #0d0f12;
+    color: #e4e4e7;
+    font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding: 40px 20px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #12151a;
+    border: 1px solid #27272a;
+    border-radius: 4px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Header Section */
+  header {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #e10600;
+  }
+
+  h1 {
+    color: #ffffff;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: #e10600;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    font-size: 13.5px;
+    color: #a1a1aa;
+  }
+
+  /* Red Banner Section Headers */
+  h2 {
+    background: linear-gradient(90deg, #cc0000 0%, #800000 100%);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 6px 14px;
+    margin-top: 25px;
+    margin-bottom: 16px;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(225, 6, 0, 0.2);
+  }
+
+  p {
+    font-size: 14px;
+    color: #d4d4d8;
+    margin-bottom: 8px;
+  }
+
+  /* Bullet Styling matching original design */
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #d4d4d8;
+  }
+
+  li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: #e10600;
+    font-size: 9px;
+  }
+
+  /* Areas of Expertise Grid */
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px 16px;
+    margin-top: 12px;
+  }
+
+  .expertise-item {
+    font-size: 13.5px;
+    color: #ffffff;
+    background: #1a1e24;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border-left: 3px solid #e10600;
+  }
+
+  /* Experience & Role Styles */
+  .role-container {
+    margin-bottom: 22px;
+  }
+
+  .company-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 700;
+    font-size: 15.5px;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .role-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: #e10600;
+    margin-top: 12px;
+    margin-bottom: 6px;
+  }
+
+  .date {
+    font-size: 13px;
+    color: #e10600;
+    font-weight: 700;
+  }
+
+  /* Sub-lists for nested bullet points */
+  .sub-list {
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .sub-list li {
+    padding-left: 18px;
+    margin-bottom: 6px;
+  }
+
+  .sub-list li::before {
+    content: "•";
+    left: 4px;
+    top: -1px;
+    font-size: 12px;
+    color: #e10600;
+  }
+
+  /* Publications */
+  .publication-item {
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #d4d4d8;
+  }
+
+  .publication-item a {
+    color: #e10600;
+    text-decoration: none;
+  }
+
+  .publication-item a:hover {
+    text-decoration: underline;
+  }
+
+  /* Print Support */
+  @media print {
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      padding: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    h1 {
+      color: #000000;
+    }
+    h2 {
+      background: #cc0000 !important;
+      color: #ffffff !important;
+    }
+    .company-header {
+      color: #000000;
+    }
+    .role-header, .date, .subtitle, .publication-item a {
+      color: #cc0000;
+    }
+    p, li, .contact-info {
+      color: #222222;
+    }
+    .expertise-item {
+      background: #f4f4f5;
+      color: #000000;
+      border-left: 3px solid #cc0000;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>NATALIA SANCHEZ</h1>
+    <div class="subtitle">SR. AEROSPACE SYSTEMS ENGINEER • TECHNICAL LEAD & MANAGER • CHANGEMAKER</div>
+    <div class="contact-info">
+      <span>linkedin.com/in/nataliasv/</span>
+      <span>+1 626.627.3209</span>
+      <span>sanchezvnatalia@gmail.com</span>
+      <span>Available for Relocation</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>SUMMARY</h2>
+    <ul>
+      <li>Engineering leader and manager with 18 years of experience in Systems Engineering at NASA's Jet Propulsion Laboratory and technology startups[cite: 1, 4].</li>
+      <li>Specialized in Space Systems Verification & Validation (V&V), project lifecycle management, process improvement, high-performing engineering teams and multi-disciplinary collaborations[cite: 1, 4].</li>
+      <li>Diverse roles and projects: 11 programs each with different systems, flagships to experimental, from concept to operation and decommissioning[cite: 1, 4].</li>
+      <li>Currently driving Requirements/V&V Process Transformation across large engineering organizations and co-leading AI infusion on new JPL missions. Previously led institution-wide digital transitions to enterprise platforms[cite: 1, 4].</li>
+      <li>Demonstrated success in tactical and strategic roles, including establishing updated Systems Engineering practices & deliverables that increased operational efficiency and reduced implementation risk[cite: 1, 4].</li>
+      <li>5 years’ experience in people and Engineering function management: Hiring, training, managing and leading Systems Engineering individual contributors[cite: 1, 4].</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>EDUCATION & TRAINING</h2>
+    <div class="company-header">
+      <span>M.S. Technology Management - Systems Engineering concentration | B.S. Aerospace Engineering (Honors)</span>
+      <span class="date">June 2008</span>
+    </div>
+    <p style="color: #a1a1aa; font-size: 13.5px; margin-bottom: 6px;">California Polytechnic State University, San Luis Obispo, CA</p>
+    <p><strong>Distinctive courses:</strong> Quality Control and Process Improvement • Enterprise Resource Planning • Flight Simulation and Aerodynamics of NASA Research Aircraft (Thesis and Field testing)[cite: 1, 4]</p>
+    <p><strong>Selected Professional Training:</strong> NASA Systems Engineering and Project Management, JPL Organizational Leadership, Radical Candor, Crucial Conversations, The Fifth Discipline: The Art and Practice of the Learning Organization[cite: 1, 4].</p>
+  </section>
+
+  <section>
+    <h2>AREAS OF EXPERTISE</h2>
+    <div class="expertise-grid">
+      <div class="expertise-item">Systems Engineering Governance & Standards[cite: 1, 4]</div>
+      <div class="expertise-item">Requirements & Interface Management[cite: 1, 4]</div>
+      <div class="expertise-item">Robotics V&V / Software-Hardware I&T[cite: 1, 4]</div>
+      <div class="expertise-item">Relational Databases & Collaboration Software[cite: 1, 4]</div>
+      <div class="expertise-item">Process Improvement & Strategy[cite: 1, 4]</div>
+      <div class="expertise-item">Telemetry Analysis & Performance Metrics[cite: 1, 4]</div>
+      <div class="expertise-item">Multidisciplinary & International Collaborations[cite: 1, 4]</div>
+      <div class="expertise-item">Technical Project Management[cite: 1, 4]</div>
+      <div class="expertise-item">Talent Management & Coaching[cite: 1, 4]</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>ACHIEVEMENT HIGHLIGHTS</h2>
+    <ul>
+      <li>
+        <strong>Systems Engineering Transformation:</strong> Co-led a 2-year strategic initiative to upgrade JPL's Requirements/ V&V engineering practices with emphasis on standardization and optimization of the technology stack and lessons learned[cite: 1, 4]:
+        <ul class="sub-list">
+          <li>Conducted trade studies to select tools for Requirements Management, test automation, document lifecycle, and data visualization, evaluated the software as customer, and drove consensus among stakeholders and decision-makers[cite: 1, 4];</li>
+          <li>Worked with UX designers through the innovation process: Discovery, user research, incubation, evaluation, and prioritization of innovation opportunities. Currently I’m co-leading an AI Adoption initiative[cite: 1, 4].</li>
+          <li>Led user pain-point and process analyses, architected adaptable frameworks that address analyses’ findings and best support a range of use cases and institutional constraints[cite: 1, 4];</li>
+          <li>Designed and standardized database schemas, workflows, and metrics; transitioned digital infrastructure to industry-leading enterprise software, including tailoring the tools to the new frameworks and training users in best practices[cite: 1, 4];</li>
+          <li>Redefined tasks and roles to align with the updated processes and technology stack and implement lessons learned[cite: 2, 4];</li>
+          <li>Introduced resource- and schedule-based V&V planning and management[cite: 2, 4].</li>
+        </ul>
+      </li>
+      <li><strong>Database & Metrics Automation:</strong> Developed a proprietary tool suite to automate (1) data querying and extraction from a relational database, (2) on-demand or scheduled database updates, and (3) data analysis and metrics generation; became JPL's institutional standard, adopted across multiple programs[cite: 2, 4].</li>
+      <li><strong>Requirements Framework Deployment:</strong> Architected and implemented a full requirements development & management framework using DOORS between JPL and the Indian Space Research Organization (ISRO), delivering the first Requirements-Design baseline to pass NASA Key Decision Point for project implementation; trained ISRO engineers remotely[cite: 2, 4].</li>
+      <li><strong>Space Exploration Breakthrough:</strong> Led the verification & validation (V&V) of the Curiosity Mars Rover Drill software, ensuring integrated hardware-software functionality, performance, and operability in flight, directly enabling the historic first acquisition of a Martian rock sample and one of the most significant scientific discoveries in planetary exploration[cite: 2, 4].</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>PROFESSIONAL EXPERIENCE</h2>
+    <div class="role-container">
+      <div class="company-header">
+        <span>NASA Jet Propulsion Laboratory (JPL), Pasadena, CA</span>
+        <span style="color: #a1a1aa; font-weight: 400; font-size: 13.5px;">2008-17, 2020-Present[cite: 2, 4]</span>
+      </div>
+      <p style="color: #a1a1aa; font-size: 13.5px; margin-bottom: 8px;">Systems Engineer 4 - Management M1[cite: 2, 4]</p>
+
+      <div class="role-header">
+        <span>Technical Group Supervisor: Flight Systems Verification & Validation (V&V) Engineering</span>
+        <span class="date">Oct 2021-Present[cite: 2, 4]</span>
+      </div>
+      <ul>
+        <li>Led and managed a group of 15-30 engineers overseeing cross-cutting system compliance on diverse concurrent programs. Responsible for all aspects of group performance, business operations, and career development[cite: 2, 4].</li>
+        <li>Drove strategic improvements in institutional practices/workflows that impact V&V engineering efficiency on all project types, reported directly to executive leadership (JPL Office of Chief Engineer, Project Engineering Management Council)[cite: 2, 4].</li>
+        <li>Collaborated with cross-functional stakeholders, including Engineering and Business leads, to address workforce and technical challenges such as launch delays, systemic hardware failures, and program cancellations[cite: 2, 4].</li>
+        <li>Defined frameworks and products for verifying projects' compliance with customer requirements, industry standards and regulations; provided guidance and training to implementers through command media and process codification[cite: 2, 4].</li>
+        <li>Conducted comprehensive workforce, costing and schedule analyses for 8+ flight projects, proactively identifying risks and staffing contingencies. Managed end-to-end hiring and training to ensure optimal team performance and program resourcing. Drafted and approved Statements of Work[cite: 2, 4].</li>
+        <li>Served as Engineering Review Chair and subject matter expert on institutional V&V Peer Reviews and L2-L3 Requirements Reviews for in-development missions (Mars Sample Return, NEO-Surveyor, GRACE Continuity, SPHEREx, SunRISE, MoonFall), identified risks that materialized, and supported projects through their resolution[cite: 2, 4].</li>
+        <li>Currently coordinating JPL's emerging AI adoption in Systems Engineering; conducting early evaluations of AI platforms, created JPL’s first V&V Assistant agent[cite: 2, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>Europa Clipper Testbed V&V Lead, System Integration & Test Team (SI&T)[cite: 2, 4]</span>
+      </div>
+      <ul>
+        <li>Coordinated the technical scope for Europa Clipper's V&V execution on the System Testbed, translating system-level requirements into comprehensive test procedures and data products[cite: 2, 4].</li>
+        <li>Established and implemented V&V processes and standard operating procedures, trained distributed/remote teams of 15-30 Systems Engineers, and managed collaboration platforms and dashboards[cite: 2, 4].</li>
+        <li>Regularly presented status and risks to project and institutional management[cite: 2, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>Asteroid Redirect Robotic Mission Project V&V Lead, Technical Project Management Team[cite: 2, 4]</span>
+      </div>
+      <ul>
+        <li>Drafted requirements & work agreements with 6+ industry partners; defined multi-agency approaches for verifying systems capabilities against mission objectives, contributing to first successful project-level key decision point[cite: 2, 4].</li>
+        <li>Authored Project V&V Plan, including testbed requirements + MBSE approach[cite: 2, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>InSight Mission to Mars: Project-level Systems Engineer, Technical Project Management Team[cite: 2, 4]</span>
+      </div>
+      <ul>
+        <li>Led the test & analysis campaign to verify and validate the End-to-End Information System with subject matter experts, coordinating activities across 5 organizations including Lockheed Martin and demonstrating compliance with Flight-Ground ICDs for all 3 Mars relay orbiters[cite: 2, 4].</li>
+        <li>Delivered test hardware + procedures for remote anomaly resolution of non-conformant European payload in support of the Seismometer Binding Tiger Team, leading to successful fix replication by French counterparts and improved sense of team accomplishment with European Space Agency ESA/CNES[cite: 2, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>NISAR Project Requirements Lead | ISS-RapidScat Safety Systems Engineer, Technical Project Management Teams[cite: 3, 4]</span>
+      </div>
+      <ul>
+        <li>Architected and implemented a Requirements development & management framework based on Systems Engineering best practices, delivered and co-authored the first L2-L3 requirements baseline to pass Project-level Gate Reviews[cite: 3, 4].</li>
+        <li>Trained a team of partner Indian Space Research Organization Systems Engineers (based in India) on requirements development methodology and set up/managed DOORS database. Recruited and mentored interns that later were hired full time as JPL employees[cite: 3, 4].</li>
+        <li>Verified mechanical, electrical, and human safety compliance of 'refurbished' radar instrument to be compatible with the International Space Station Columbus module and SpaceX Falcon9 rocket interfaces[cite: 3, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>Curiosity Mars Rover: Sampling Mechanism V&V Engineer & Testbed Engineer, Flight Systems Engineering Team[cite: 3, 4]</span>
+      </div>
+      <ul>
+        <li>Responsible for the operational readiness and safe handling of the robotic sampling drill in flight and test environments. Completed verification & validation of its software and flight sequences leading to the acquisition of the first Martian rock sample. Included verification of all Flight Software requirements, commands, telemetry, and operations procedures for its First Time Activities on the surface of Mars[cite: 3, 4].</li>
+        <li>Planned and conducted software-hardware testing on Rover Testbed and Flight Software simulator, prescribed + verified corrective action to anomalies, formulated + performed regression testing, delivered L4/L5 data analyses documenting subsystem compliance for 3 Flight Software releases, and certified complex multi-system behaviors and capabilities for flight through structured institutional Software Acceptance Certifications[cite: 3, 4].</li>
+      </ul>
+
+      <div class="role-header">
+        <span>JUNO Jupiter flagship: Support V&V Engineer, Project-level Technical Management Team[cite: 3, 4]</span>
+      </div>
+      <ul>
+        <li>Liaison for insight/oversight of the Verification & Validation program working with Lockheed Martin and 10 Science Principal Investigators. Provided critical data-driven insights and progress metrics to project managers, enabling timely prioritization and closure of critical activities, and ensuring successful institutional audits for launch approval[cite: 3, 4].</li>
+        <li>Created and managed a multi-location DOORS database that aggregated the 7,000+ specs for all systems of the mission[cite: 3, 4].</li>
+        <li>Developed and implemented a proprietary tool suite that significantly enhanced efficiency in database mining and metrics reporting, establishing a new standard for project management's V&V tracking across multiple missions[cite: 3, 4].</li>
+      </ul>
+    </div>
+
+    <div class="role-container">
+      <div class="company-header">
+        <span>Startups & Consulting: Shared Studios, NYC; Drone Racing League, NYC; Doctorpedia, Los Angeles[cite: 3, 4]</span>
+        <span class="date">Jul 2017 - Mar 2019[cite: 3, 4]</span>
+      </div>
+      <ul>
+        <li>Architected product development roadmaps, automation tools, Work Breakdown Structures and Critical Path Analyses[cite: 3, 4].</li>
+        <li>Identified function/process/product gaps and recommended hiring strategy for a fully-functional development team paired with simple processes to address organizational challenges and better align business objectives with results[cite: 3, 4].</li>
+        <li>Deployed multi-media life-size Portals that connect people in remote locations for education, outreach, and enterprise[cite: 3, 4].</li>
+        <li>Structured scenario-based development timelines & estimated resources for launching scalable online platform MVP, resulting in more streamlined integration of workflows among remote teams of doctors, producers, developers, business analysts, legal & quality control[cite: 3, 4].</li>
+        <li>Designed and implemented algorithms and automation of proprietary matrix tool for job-salary grading & profit analyses[cite: 3, 4].</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>DISTINCTIONS & OTHER QUALIFICATIONS</h2>
+    <ul>
+      <li><strong>Advanced user:</strong> Jira, Confluence, Asana, Anaplan, DOORS/DNG, Jama, Figma, Microsoft Office suite[cite: 3, 4].</li>
+      <li>JPL Leadership Mentoring Program 2024 cohort - 20 selected out of ~1,700 mid-career individual contributors[cite: 3, 4].</li>
+      <li>Recipient of 20+ team and individual NASA awards over 15+ years of service. References available[cite: 3, 4].</li>
+      <li>Fluent in Spanish (native), beginner French. Avid international traveler, meditator, yogi[cite: 3, 4].</li>
+      <li>Dual citizen U.S. and Colombia, willing to relocate as early as December 2026[cite: 3, 4].</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>PUBLICATIONS</h2>
+    <div class="publication-item">
+      [1] Vierlboeck, M., Sanchez, N., et al. (2026). “Developing a Unified Verification and Validation Activity Standard at JPL.” <em>arXiv preprint</em>. <a href="https://arxiv.org/abs/2609.28600" target="_blank">https://arxiv.org/abs/2609.28600</a>[cite: 3, 4]
+    </div>
+    <div class="publication-item">
+      [2] <strong>Best Paper Award:</strong> Maxwell, J., Sanchez, N., et al. (2025). “Achieving Mission Success: Verification and Validation of the Psyche Mission.” <em>Journal of Electric Propulsion / IEPC</em>. <a href="https://doi.org/10.1007/s44205-025-00162-w" target="_blank">https://doi.org/10.1007/s44205-025-00162-w</a>[cite: 3, 4]
+    </div>
+    <div class="publication-item">
+      [3] Rocca, J., Lord, N. (neé Sanchez), et al. (2013). “Scaling the V&V mountain: Proving Juno will succeed at Jupiter”. <em>IEEE Aerospace Conference</em>. <a href="https://doi.org/10.1109/AERO.2013.6496893" target="_blank">https://doi.org/10.1109/AERO.2013.6496893</a>[cite: 3, 4]
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
